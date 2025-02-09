@@ -1,22 +1,23 @@
 function(_link_libfuzzer_in_compatibility_mode name)
-  if (FUZZTEST_COMPATIBILITY_MODE STREQUAL "libfuzzer")
-    EXECUTE_PROCESS (
-        COMMAND bash -c "find \${PATH//:/ } -maxdepth 1 -executable -name 'llvm-config*'"
-        OUTPUT_VARIABLE LLVM_CONFIG OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    EXECUTE_PROCESS(
-      COMMAND bash -c "find $(${LLVM_CONFIG} --libdir) \
-      -name libclang_rt.fuzzer_no_main-x86_64.a"
-      OUTPUT_VARIABLE FUZZER_NO_MAIN OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(NOT FUZZER_NO_MAIN)
-      # LLVM_ENABLE_PER_TARGET_RUNTIME_DIR was set to ON when building LLVM.
-      EXECUTE_PROCESS(
-        COMMAND bash -c "find / -regex \
-        \"$(${LLVM_CONFIG} --libdir).*$(${LLVM_CONFIG} --host-target).*libclang_rt.fuzzer_no_main.a\""
-        OUTPUT_VARIABLE FUZZER_NO_MAIN OUTPUT_STRIP_TRAILING_WHITESPACE
-      )
-    endif()
+    if (FUZZTEST_COMPATIBILITY_MODE STREQUAL "libfuzzer")
+    # EXECUTE_PROCESS (
+    #     COMMAND bash -c "find \${PATH//:/ } -maxdepth 1 -executable -name 'llvm-config*'"
+    #     OUTPUT_VARIABLE LLVM_CONFIG OUTPUT_STRIP_TRAILING_WHITESPACE
+    # )
+    # EXECUTE_PROCESS(
+    #   COMMAND bash -c "find $(${LLVM_CONFIG} --libdir) \
+    #   -name libclang_rt.fuzzer_no_main-x86_64.a"
+    #   OUTPUT_VARIABLE FUZZER_NO_MAIN OUTPUT_STRIP_TRAILING_WHITESPACE
+    # )
+    # if(NOT FUZZER_NO_MAIN)
+    #   # LLVM_ENABLE_PER_TARGET_RUNTIME_DIR was set to ON when building LLVM.
+    #   EXECUTE_PROCESS(
+    #     COMMAND bash -c "find / -regex \
+    #     \"$(${LLVM_CONFIG} --libdir).*$(${LLVM_CONFIG} --host-target).*libclang_rt.fuzzer_no_main.a\""
+    #     OUTPUT_VARIABLE FUZZER_NO_MAIN OUTPUT_STRIP_TRAILING_WHITESPACE
+    #   )
+    # endif()
+    SET(FUZZER_NO_MAIN clang_rt.fuzzer_no_main-x86_64)
     target_link_libraries(${name} PRIVATE ${FUZZER_NO_MAIN})
   endif ()
 endfunction()

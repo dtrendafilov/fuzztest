@@ -66,6 +66,8 @@ if (FUZZTEST_BUILD_TESTING)
 
 endif ()
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 set(ABSL_PROPAGATE_CXX_STD ON)
 set(ABSL_ENABLE_INSTALL ON)
 FetchContent_MakeAvailable(abseil-cpp)
